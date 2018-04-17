@@ -6,14 +6,12 @@
  */
 package com.vs.realestate.controller;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +39,8 @@ import com.vs.realestate.service.OrgService;
 import com.vs.realestate.service.PaymentService;
 import com.vs.realestate.service.PlotService;
 import com.vs.realestate.service.SalePlotService;
+import com.vs.realestate.service.UserLoginService;
+
 
 @Controller
 public class RealEstateController {
@@ -67,6 +67,9 @@ public class RealEstateController {
 	@Autowired
 	PaymentService thepaymentservice;
 	
+	@Autowired
+	UserLoginService userLoginService;
+	
 	Gson gson=new Gson();
 	
 	@RequestMapping("/hello")
@@ -74,6 +77,35 @@ public class RealEstateController {
 	{
 		return "dashboard";
 	}
+	
+	
+	@RequestMapping("/login")
+	public String userLogin()
+	{
+		return "login";
+	}
+
+	
+	@RequestMapping("submitLogin")
+	public String checkLogin(HttpServletRequest request, Model model) {
+		
+		if(userLoginService.AuthenticateUserService(request)==1) {
+			return "dashboard";
+		}
+		
+		model.addAttribute("error", "1");
+		return "login";
+	}
+	
+	@RequestMapping("/logOut")
+	public String userLogOut(HttpServletRequest request)
+	{
+		HttpSession httpSession = request.getSession(false);
+		httpSession.invalidate(); 
+		return "login";
+	}
+	
+	
 	
 	//////////////////// ADDSITE  START ///////////////////////	
 	
